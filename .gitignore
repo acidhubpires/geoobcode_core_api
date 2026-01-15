@@ -1,0 +1,15 @@
+# env / secrets
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# data (local PoC)
+data/
+
+# editors
+.vscode/
+.idea/
