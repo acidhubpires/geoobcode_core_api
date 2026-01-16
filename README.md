@@ -1,232 +1,128 @@
-# ACID AgentIA Hub — PoC API (FastAPI)
+# GeoOBCode Core API — PoC (FastAPI)
 
-Infraestrutura cognitiva (PoC avançada) para **Agentes de IA** com:
-- autenticação JWT (tenant/user/role),
-- ingestão de conhecimento (arquivos + URLs + notas),
-- síntese em **Matriz de Conhecimento** (memória do agente),
-- interação via chat autenticado,
-- persistência local (JSON) apenas para testes de fluxo.
+O **GeoOBCode Core API** é o núcleo de uma tecnologia de **codificação espaço-temporal estruturada**, voltada à **integridade, rastreabilidade e governança de processos**, decisões e estados — com horizonte de longo prazo.
 
-> Este projeto **não** é um chatbot genérico. É um **middleware cognitivo** orientado a governança e continuidade.
+Este repositório nasce a partir de um **baseline técnico** do projeto *AgentIA Hub*, mas **segue um caminho próprio**, com propósito, modelo conceitual e aplicações distintas.
+
+> **GeoOBCode não é um chatbot, nem um sistema de agentes.**  
+> É uma **infraestrutura base** para representar, selar e verificar estados e eventos complexos de forma determinística e auditável.
 
 ---
 
-## Sumário
+## Origem e Linhagem
 
-- [ACID AgentIA Hub — PoC API (FastAPI)](#acid-agentia-hub--poc-api-fastapi)
-  - [Sumário](#sumário)
-  - [Visão Geral](#visão-geral)
-  - [Fluxo Cognitivo](#fluxo-cognitivo)
-    - [Modelo mental (arquivo → conhecimento → conversa)](#modelo-mental-arquivo--conhecimento--conversa)
-    - [Princípio chave](#princípio-chave)
-  - [Arquitetura](#arquitetura)
-  - [Endpoints](#endpoints)
-    - [Auth](#auth)
-    - [Agents](#agents)
-    - [Chat](#chat)
-    - [Admin](#admin)
-    - [Ingest (genérico)](#ingest-genérico)
-  - [Quickstart](#quickstart)
-    - [1) Instalar dependências](#1-instalar-dependências)
-    - [2) Variáveis de ambiente](#2-variáveis-de-ambiente)
-    - [3) Rodar API](#3-rodar-api)
-  - [Testes via Swagger / cURL](#testes-via-swagger--curl)
-    - [1) Login](#1-login)
-    - [2) Criar agente](#2-criar-agente)
-    - [3) Ingestão de arquivo (recomendado)](#3-ingestão-de-arquivo-recomendado)
-    - [4) Chat com o agente](#4-chat-com-o-agente)
-  - [Decisões Importantes](#decisões-importantes)
-  - [Limites da PoC](#limites-da-poc)
-  - [Roadmap (PoC → MVP)](#roadmap-poc--mvp)
+- **Autor / Base Cognitiva**: PIRESAAO  
+- **Baseline Técnico**: PIRESAAO AgentIA Hub (FastAPI)
+- **Commit inicial**:  
+  `chore: initialize GeoOBCode API from PIRESAAO AgentIA Hub Baseline`
+
+A base de conhecimento e os princípios estruturais são **pessoais (PIRESAAO)**, porém o desenvolvimento se bifurca em dois caminhos claros:
+
+| Caminho | Propósito |
+|------|---------|
+| **ACIDHUB / Geotoken Engine** | Infraestrutura cognitiva, agentes, tokens, negócios |
+| **GeoOBCode** | Codificação estrutural, prova de processo, integridade espaço-temporal |
+
+Essa separação é **intencional e estratégica**.
 
 ---
 
-## Visão Geral
+## O que é o GeoOBCode
 
-O ACID AgentIA Hub oferece uma API para:
-1) criar/agregar agentes (entidades cognitivas),
-2) ingerir documentos/URLs/notas,
-3) sintetizar o conteúdo em uma **Matriz de Conhecimento** versionada,
-4) conversar com o agente usando essa matriz como contexto autoritativo.
+O **GeoOBCode** é um **framework de codificação e selagem** que permite:
 
-A PoC usa persistência local em JSON para validar interações e contratos.
+- representar **eventos, estados e decisões** como estruturas verificáveis,
+- manter **delimitação semântica explícita** (fato, hipótese, inferência),
+- gerar **provas de execução e processo**, não apenas de documentos,
+- sustentar governança, auditoria e reversibilidade.
+
+Ele pode operar:
+- isoladamente (off-chain),
+- ancorado criptograficamente (quando fizer sentido),
+- interoperável com outras infraestruturas (ex.: Geotoken Engine).
 
 ---
 
-## Fluxo Cognitivo
+## Princípios Arquiteturais
 
-### Modelo mental (arquivo → conhecimento → conversa)
+- **Estado explícito > memória implícita**
+- **Contrato formal > prompt heurístico**
+- **Determinismo onde importa**
+- **Separação entre conteúdo e integridade**
+- **Evolução incremental, sem reescrita**
+
+Este projeto privilegia **robustez sistêmica**, não velocidade de demo.
+
+---
+
+## Estrutura do Projeto
 
 ```text
-[Upload/URLs/Notes]
-     ↓
-[Extração por tipo (pdf/docx/xlsx/txt)]
-     ↓
-[Normalização + budgets + warnings]
-     ↓
-[Síntese LLM → Matriz do Agente]
-     ↓
-[Persistência local (JSON) — PoC]
-     ↓
-[/chat usa matriz como contexto]
+app/
+ ├─ api/        # Contratos HTTP (PoC)
+ ├─ core/       # Configuração, segurança, governança
+ ├─ services/   # Codificação, validação, selagem
+ ├─ infra/      # Persistência local (PoC)
+ └─ domain/     # Schemas e contratos tipados
 ````
 
-### Princípio chave
-
-* O arquivo **não** é a memória.
-* A memória é a **Matriz de Conhecimento** (texto consolidado, versionado).
-* O chat responde sobre a matriz, **sem reler o arquivo**.
+A estrutura é **neutra e reutilizável**, preservada do baseline técnico.
 
 ---
 
-## Arquitetura
+## Status Atual (PoC)
 
-Estrutura típica:
-
-* `app/main.py` — app FastAPI, routers
-* `app/api/` — rotas (`auth`, `agents`, `chat`, `admin`, `ingest`)
-* `app/core/` — config, segurança, governança
-* `app/services/` — ingestão, loaders, cliente LLM, utilitários
-* `app/infra/` — store local em JSON (PoC)
-* `app/domain/` — schemas/contratos
+* ✔ Estrutura FastAPI funcional
+* ✔ Persistência local (JSON) para validação de fluxo
+* ✔ Contratos claros de entrada/saída
+* ✔ Linhagem técnica preservada
+* ⏳ Implementação específica do GeoOBCode (em progresso)
 
 ---
 
-## Endpoints
+## O que este repositório **não é**
 
-### Auth
+* ❌ Não é um chatbot
+* ❌ Não é um sistema de agentes autônomos
+* ❌ Não é um produto de engajamento
+* ❌ Não é um repositório de documentos
 
-* `POST /auth/login`
-
-### Agents
-
-* `GET /agents` (auth)
-
-* `POST /agents` (auth)
-
-* `POST /agents/{agent_id}/ingest` (auth)
-  Ingestão via JSON (docs_text/urls) — útil para testes rápidos.
-
-* `POST /agents/{agent_id}/ingest/upload` (auth)
-  Ingestão via `multipart/form-data` (arquivos + urls + notes) — fluxo recomendado.
-
-### Chat
-
-* `POST /chat` (auth)
-* `POST /chat/stream` (auth)
-
-### Admin
-
-* `GET /health`
-
-### Ingest (genérico)
-
-* `POST /ingest/upload` (opcional)
-
-> Pode existir como endpoint “genérico”, porém o fluxo recomendado para a PoC é o **agent-first**:
-> `/agents/{agent_id}/ingest/upload`
+Ele é **infraestrutura base**.
 
 ---
 
-## Quickstart
+## Roadmap Conceitual (alto nível)
 
-### 1) Instalar dependências
+### Fase 1 — Núcleo Estrutural
 
-```bash
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# Linux/macOS:
-source .venv/bin/activate
+* Definição formal do **Case / Cell / Seal**
+* Codificação determinística de estados
+* Versionamento e integridade
 
-pip install -r requirements.txt
-```
+### Fase 2 — Governança e Prova
 
-### 2) Variáveis de ambiente
+* Trilhas de eventos
+* Verificação e consistência
+* Reversibilidade controlada
 
-Crie `.env` baseado no `.env.example`.
+### Fase 3 — Interoperabilidade
 
-### 3) Rodar API
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Swagger:
-
-* `http://127.0.0.1:8000/docs`
+* Integração opcional com Geotoken Engine
+* Selagem visual (GeoOBCode)
+* Ancoragem criptográfica (quando aplicável)
 
 ---
 
-## Testes via Swagger / cURL
+## Nota Final
 
-### 1) Login
+O **GeoOBCode** é pensado como tecnologia de **horizonte longo**, com baixa dívida técnica e alto rigor conceitual.
 
-```bash
-curl -X POST "http://127.0.0.1:8000/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"tenant":"electra","email":"admin@electra.local","password":"SenhaForte123"}'
-```
-
-### 2) Criar agente
-
-```bash
-curl -X POST "http://127.0.0.1:8000/agents" \
-  -H "Authorization: Bearer <TOKEN>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Powerledger Analyst","specialty":"Blockchain / Tokenomics","description":"Agente para leitura e análise de whitepapers."}'
-```
-
-### 3) Ingestão de arquivo (recomendado)
-
-```bash
-curl -X POST "http://127.0.0.1:8000/agents/<AGENT_ID>/ingest/upload" \
-  -H "Authorization: Bearer <TOKEN>" \
-  -F "files=@./docs/powerledger-lightpaper.pdf" \
-  -F "urls=https://exemplo.com/pagina1
-https://exemplo.com/pagina2" \
-  -F "notes=Considere riscos regulatórios e tokenomics."
-```
-
-### 4) Chat com o agente
-
-```bash
-curl -X POST "http://127.0.0.1:8000/chat" \
-  -H "Authorization: Bearer <TOKEN>" \
-  -H "Content-Type: application/json" \
-  -d '{"agent_id":"<AGENT_ID>","message":"Quais são os riscos principais e como mitigá-los?"}'
-```
+Ele compartilha **origem intelectual** com outros projetos do ecossistema PIRESAAO, mas **não compartilha destino**.
 
 ---
 
-## Decisões Importantes
+© PIRESAAO — todos os direitos reservados
 
-* **Agent-first**: a unidade cognitiva é o `agent_id`.
-* **Matriz versionada**: ingestão gera `matrix_version` (evolução controlada).
-* **PoC sem BD**: persistência local em JSON para validar contrato/fluxo.
-* **Governança mínima**: limites, truncamento, warnings (evita “explodir contexto”).
 
----
 
-## Limites da PoC
 
-* Persistência local: sem lock / concorrência avançada.
-* Extração PDF “digital”: OCR não incluído.
-* Budget e truncamento: prioriza estabilidade do fluxo e custo previsível.
-* Sem embeddings/RAG por padrão: foco em validação do middleware cognitivo.
-
----
-
-## Roadmap (PoC → MVP)
-
-* Store: JSON → DB (SQLite/Firebase/Firestore)
-* Auditoria: hash + provenance + trilha de ingestão
-* Ingest incremental: anexar+consolidar por seções
-* Multi-LLM: roteamento por provider (Groq/Gemini/OpenAI)
-* RAG opcional: ativável por caso de uso, com governança
-
-```
-
-Docs:
-- Swagger: http://localhost:8000/docs
-- Health: http://localhost:8000/health
