@@ -27,14 +27,7 @@ Este repositório representa o **núcleo estrutural** da tecnologia, voltado à 
 - **Commit de origem**:  
   `chore: initialize GeoOBCode API from PIRESAAO AgentIA Hub Baseline`
 
-A base de conhecimento, os princípios arquiteturais e a visão sistêmica são **pessoais (PIRESAAO)**, porém seguem **caminhos tecnológicos distintos e intencionais**:
-
-| Caminho | Propósito |
-|-------|-----------|
-| **ACIDHUB / Geotoken Engine** | Infraestrutura cognitiva, agentes, tokens, negócios |
-| **GeoOBCode / Blue Identy** | Codificação estrutural, identidade, prova de processo, integridade |
-
-A separação entre esses caminhos é **estratégica, deliberada e permanente**.
+A base de conhecimento, os princípios arquiteturais e a visão sistêmica são **pessoais (PIRESAAO)**, porém seguem **caminhos tecnológicos distintos e intencionais**, sendo que a separação entre esses caminhos é **estratégica, deliberada e permanente**.
 
 ---
 
